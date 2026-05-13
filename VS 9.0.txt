@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Romeo // Mahal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Inter:wght@300;400;500&family=Dancing+Script:wght@500;600&family=Orbitron:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --deep-bg: #0f172a;
+            --text-light: #f8fafc;
+            --gold: #fbbf24;
+            --rose: #f43f5e;
+            --parchment: #fffdf5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--deep-bg); color: var(--text-light); min-height: 100vh; overflow-x: hidden; }
+
+        /* ----- Landing / PIN ----- */
+        #landing-page {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+            display: flex; justify-content: center; align-items: center; z-index: 4000;
+        }
+        .gift-card {
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px);
+            padding: 2.5rem; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center; max-width: 400px; width: 90%;
+        }
+        .pin-input {
+            width: 100%; padding: 0.8rem; margin: 1.2rem 0; background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--primary-purple); border-radius: 12px; color: white;
+            text-align: center; letter-spacing: 5px; outline: none; font-size: 1.2rem;
+        }
+
+        /* ----- Intro Sequence ----- */
+        #intro-sequence {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; z-index: 5000; display: none;
+            justify-content: center; align-items: center; text-align: center;
+        }
+        .intro-text {
+            font-family: 'Orbitron'; font-size: 1rem; color: var(--primary-purple);
+            letter-spacing: 3px; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+        /* ----- Main Page Layout ----- */
+        #main-page { display: none; padding: 3rem 1.5rem; opacity: 0; transition: opacity 2s ease; }
+        
+        .timer-unit { 
+            background: rgba(139, 92, 246, 0.1); padding: 0.8rem; border-radius: 12px; 
+            min-width: 70px; text-align: center; border: 1px solid rgba(139, 92, 246, 0.2); 
+        }
+        .timer-unit span { display: block; font-size: 1.6rem; color: var(--primary-purple); font-family: 'Orbitron'; }
+
+        .gift-grid { display: flex; flex-direction: column; gap: 12px; max-width: 420px; margin: 2.5rem auto; }
+        .menu-btn {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white; padding: 1.2rem; border-radius: 15px; cursor: pointer;
+            display: flex; justify-content: space-between; transition: 0.3s; align-items: center;
+            font-family: 'Poppins', sans-serif;
+        }
+        .menu-btn:hover { background: rgba(139, 92, 246, 0.2); transform: translateX(8px); border-color: var(--primary-purple); }
+
+        /* ----- Views ----- */
+        .gift-view { display: none; max-width: 700px; margin: 0 auto; animation: fadeIn 0.8s ease; }
+        
+        #seal-wrapper { text-align: center; cursor: pointer; padding: 60px 0; }
+        .wax-seal {
+            width: 90px; height: 90px; background: #991b1b; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; color: white; box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            border: 4px solid #7f1d1d; transition: 0.4s; position: relative;
+        }
+        .wax-seal:after { content: '♥'; position: absolute; }
+        #seal-wrapper:hover .wax-seal { transform: scale(1.1) rotate(10deg); background: #b91c1c; }
+
+        .paper-letter {
+            display: none; background: var(--parchment); color: #1a1a1a;
+            padding: 60px 45px; border-radius: 2px; line-height: 1.8;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5); transform-origin: top;
+            animation: unfold 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .archive-card {
+            background: rgba(255, 255, 255, 0.05); border-radius: 24px;
+            padding: 40px 30px; border: 1px solid rgba(216, 180, 255, 0.2);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .bouquet-link {
+            display: inline-block; margin-top: 15px; padding: 12px 25px;
+            background: var(--rose); color: white; text-decoration: none;
+            border-radius: 50px; font-weight: 600; transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.3);
+        }
+        .bouquet-link:hover { transform: scale(1.05); background: #fb7185; }
+
+        /* ----- Animations ----- */
+        @keyframes unfold { from { transform: rotateX(-90deg); opacity: 0; } to { transform: rotateX(0deg); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes float { 
+            0% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-20px) translateX(10px); }
+            100% { transform: translateY(0) translateX(0); }
+        }
+        .back-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px 20px; border-radius: 30px; cursor: pointer; margin-bottom: 20px; font-size: 0.8rem; }
+        .firefly { position: fixed; width: 2px; height: 2px; background: var(--accent-blue); border-radius: 50%; pointer-events: none; opacity: 0.5; z-index: 1; }
+
+    </style>
+</head>
+<body>
+
+    <!-- STAGE 1: PIN -->
+    <div id="landing-page">
+        <div class="gift-card">
+            <h2 style="font-family: 'Playfair Display'; margin-bottom: 5px;">Project: Romeo</h2>
+            <p style="font-size: 0.65rem; color: var(--accent-blue); letter-spacing: 2px; margin-bottom: 15px;">SECURE ACCESS REQUIRED</p>
+            <input type="password" id="pin" class="pin-input" maxlength="6" placeholder="••••••" inputmode="numeric" onkeydown="if(event.key === 'Enter') startIntroSequence()">
+            <button class="menu-btn" style="justify-content: center; background: linear-gradient(to right, var(--primary-purple), var(--accent-blue)); width: 100%; border-radius: 50px;" onclick="startIntroSequence()">Unlock Memories</button>
+        </div>
+    </div>
+
+    <!-- STAGE 2: INTRO -->
+    <div id="intro-sequence">
+        <div class="intro-content">
+            <p class="intro-text" id="intro-msg">INITIALIZING SYSTEM...</p>
+        </div>
+    </div>
+
+    <!-- STAGE 3: MAIN HUB -->
+    <div id="main-page">
+        <div id="home-view" style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <div id="live-clock" style="color: var(--gold); margin-bottom: 1rem; font-family: 'Orbitron'; font-size: 0.75rem; letter-spacing: 2px;">SYNCING...</div>
+            <h1 style="font-family: 'Playfair Display'; font-size: 2.2rem; margin-bottom: 1.5rem; font-style: italic;">Happy 2nd Monthsary, Mahal</h1>
+            
+            <div style="display: flex; justify-content: center; gap: 0.8rem; margin-bottom: 3rem;">
+                <div class="timer-unit"><span id="days">0</span><label style="font-size: 0.6rem;">DAYS</label></div>
+                <div class="timer-unit"><span id="hours">0</span><label style="font-size: 0.6rem;">HOURS</label></div>
+                <div class="timer-unit"><span id="mins">0</span><label style="font-size: 0.6rem;">MINS</label></div>
+                <div class="timer-unit"><span id="secs">0</span><label style="font-size: 0.6rem;">SECS</label></div>
+            </div>
+
+            <div class="gift-grid">
+                <button class="menu-btn" onclick="showView('letter-view')">
+                    <span style="font-weight: 600;">📜 2nd Monthsary Letter</span>
+                    <span style="color: var(--gold); font-size: 0.7rem;">NEW</span>
+                </button>
+                <button class="menu-btn" onclick="showView('archive-view')">
+                    <span>💖 1st Monthsary Archive</span>
+                    <span>→</span>
+                </button>
+                <button class="menu-btn" onclick="showView('bday-view')">
+                    <span>🎂 17th Birthday Message</span>
+                    <span>→</span>
+                </button>
+                <button class="menu-btn" onclick="showView('music-view')">
+                    <span>🎵 Our Playlist</span>
+                    <span>→</span>
+                </button>
+                <button class="menu-btn" onclick="showView('interview-view')">
+                    <span>🎤 Project: Romeo Log</span>
+                    <span>→</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 2nd MONTHSARY VIEW -->
+        <div id="letter-view" class="gift-view">
+            <button class="back-btn" onclick="goHome()">← Return</button>
+            <div id="seal-wrapper" onclick="openPaper()">
+                <div class="wax-seal"></div>
+                <p style="font-family: 'Dancing Script'; font-size: 1.3rem; color: #d8b4ff; margin-top: 20px;">Tap the heart to read my promise...</p>
+            </div>
+            <div id="main-letter" class="paper-letter">
+                <h2 style="font-family: 'Dancing Script'; font-size: 2.2rem; color: #991b1b; margin-bottom: 25px;">My Dearest Mahal,</h2>
+                <div style="font-size: 1.05rem; white-space: pre-wrap; text-align: justify; color: #1a1a1a;">Happy 2nd Monthsary, my wife!!
+
+Hello po mahal... gusto ko lang sabihin sa’yo na ginagawa ko po lahat ito habang nagma makeup ka po, may 10 bago pa man dumating ang ating 2nd Monthsary. To be honest, mahal... naiiyak ako habang nakikita kitang nag aayos, habang pinagmamasdan kita. Iiyak ako hindi dahil malungkot, kundi dahil sobrang pasasalamat at pagmamahal ang nararamdaman ko kasi mayroon na akong Asawa na napakaganda, hindi lang sa panlabas kundi pati sa puso, napaka unawa, napakabuti, at napakabait sa akin. Bawat galaw mo, bawat ngiti mo, bawat pagsisikap mo, lahat ‘yan ay nagpapatunay sa akin kung gaano ako ka swerte at napili ng tadhana na ikaw ang ibigay sa akin.
+
+Alam mo naman po na wala naman akong kayang ibigay o ibahagi sa ngayon kundi ang pagmamahal ko lang sa’yo, kaya ito lang ang nagawa ko para sa’yo. Alam ko rin po... alam kong nagtatampo ka na minsan kasi hindi na kita nabibigyan ng sapat na oras gaya ng dati. Naiindihan ko kung bakit, at humihingi ako ng paumanhin kung nakakapagparamdam ako na parang hindi ka mahalaga o parang napapabayaan kita. Pasensya na po kung minsan ay abala ako o maraming ginagawa, at pakiramdam mo ay napapanghinaan ka ng loob dahil wala ako sa tabi mo o hindi tayo nakakapag usap nang matagal. Huwag po sana kayong mag isip na nababawasan ang pagmamahal ko, hinding hindi po mangyayari ‘yan.
+
+At alam ko rin na hindi lang ito ang dahilan kung bakit minsan ay malungkot o mabigat ang loob mo... Alam ko ang pinagdadaanan mo sa pamilya niyo. Nakikita ko kung gaano kabigat ang mga pasanin na dinadala mo araw araw, kung paano mong pilit na lumalakas kahit na ang sakit na sa loob mo. Gusto kong malaman mo na nakikita kita, naririnig kita, at nararamdaman ko ang bawat lungkot at pagod na nararamdaman mo. Ligtas ka sa piling ko, palagi.
+
+Ito ang pinaka sigurado at tapat kong pangako sa’yo: hindi kita iiwan, mahal. Ngayon, bukas, at sa habang panahon. Hahawakan kita nang mahigpit sa bawat mahirap na usapan, sa bawat gabing umiiyak ka, sa bawat araw na pagod ka, at sa bawat sandaling pakiramdam mo ay susuko ka na. Hindi ka lang basta girlfriend para sa akin, ikaw ang kapareha ko, ang matalik kong kaibigan, ang kapayapaan ko, at ang taong gusto kong makasama habang buhay.
+
+Happy 2nd Monthsary, mahal ko. Nandito lang ako, palagi at habang buhay.</div>
+                <p style="margin-top: 40px; font-family: 'Dancing Script'; font-size: 1.6rem; text-align: right; color: #991b1b;">Nagmamahal nang buong puso,<br>Romeo</p>
+                
+                <div style="text-align: center; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 30px; margin-top: 30px;">
+                    <a href="https://digibouquet.net/create-bouquet?b=JTdCJTIyZiUyMiUzQSU1QiUyMm9yY2hpZCUyMiUyQyUyMmNhbWVsbGlhJTIyJTJDJTIyZGFpc3klMjIlMkMlMjJsb3R1cyUyMiUyQyUyMnR1bGlwJTIyJTJDJTIycGVvbnklMjIlMkMlMjJyb3NlJTIyJTJDJTIybGlseSUyMiU1RCUyQyUyMmclMjIlM0ElMjJncmVlbmVyeTIlMjIlMkMlMjJjJTIyJTNBJTIyd2F0ZXJjb2xvciUyMiUyQyUyMnRvJTIyJTNBJTIyTXklMjBXaWZlJTIwJTIyJTJDJTIyZnIlMjIlM0ElMjJKTCUyMiUyQyUyMm0lMjIlM0ElMjJIYXBweSUyMDJuZCUyME1vbnRoc2FyeSElMjIlMkMlMjJiZyUyMiUzQSUyMmxhdmVuZGVyLWRyZWFtJTIyJTdE" target="_blank" class="bouquet-link">💐 Open Monthsary Bouquet</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1st MONTHSARY ARCHIVE -->
+        <div id="archive-view" class="gift-view">
+            <button class="back-btn" onclick="goHome()">← Return</button>
+            <div class="archive-card" style="text-align: center;">
+                <h2 style="font-family: 'Playfair Display'; color: #d8b4ff; margin-bottom: 10px;">The First Milestone</h2>
+                <p style="color: var(--gold); margin-bottom: 20px;">April 14, 2026</p>
+                <p style="line-height: 1.6; margin-bottom: 25px;">"Salamat sa pagtitiwala sa akin, sa pagbukas ng iyong puso, at sa pagiging ikaw mismo."</p>
+                <div style="background: rgba(244, 63, 94, 0.1); border: 1px dashed var(--rose); padding: 20px; border-radius: 15px;">
+                    <a href="https://digibouquet.vercel.app/bouquet/0382aca8-4b69-486e-b6c6-7f02b69eb11a" target="_blank" class="bouquet-link">🌸 Open Your 1st Bouquet</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- BIRTHDAY VIEW -->
+        <div id="bday-view" class="gift-view">
+            <button class="back-btn" onclick="goHome()">← Return</button>
+            <div class="archive-card" style="text-align: left; background: rgba(139, 92, 246, 0.05); border: 1px solid var(--gold);">
+                <h3 style="font-family: 'Dancing Script'; font-size: 2.2rem; margin-bottom: 20px; color: var(--gold); text-align: center;">Happy 17th Birthday, mahal ko.</h3>
+                <div style="opacity: 0.9; line-height: 1.8; font-size: 1.05rem; white-space: pre-wrap;">This is from someone unexpected… someone who didn’t plan to walk into your life, but somehow found a place in it anyway. And even if I came quietly and without warning, please know I’m here with genuine intentions and a heart that cares deeply for you.
+
+On your special day, I just want to remind you that you are seen, appreciated, and loved in ways you may not always realize. I know life hasn’t always been easy, and there are moments when you carry things silently, but you don’t have to face everything alone. I’m here, not just for the happy moments, but also for the days when things feel heavy.
+
+You deserve a kind of love that feels safe, steady, and reassuring. The kind that doesn’t confuse you, doesn’t leave you questioning your worth, and doesn’t disappear when things get hard. I may have come into your life unexpectedly, but my presence is something I choose every day.
+
+And because you’re that special to me, I made something just for you, a website created with all my thoughts and feelings, hoping it can show even a small part of how much you mean to me.
+
+I hope this year brings you peace in your heart, clarity in your mind, and warmth in your soul. And in all the uncertainty life brings, I hope you feel one thing clearly, I’m here for you, mahal ko.
+
+Happy Birthday again. You mean more than you think. 💜💙</div>
+            </div>
+        </div>
+
+        <!-- MUSIC VIEW -->
+        <div id="music-view" class="gift-view">
+            <button class="back-btn" onclick="goHome()">← Return</button>
+            <div class="archive-card" style="text-align: center;">
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/0tgVpDi06FyKpA1z0VMD4v?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <p style="font-family: 'Dancing Script'; font-size: 1.2rem; color: var(--gold); margin-top: 15px;">"This reminds me of your smile."</p>
+            </div>
+        </div>
+
+        <!-- UPDATED INTERVIEW/LOG VIEW -->
+        <div id="interview-view" class="gift-view">
+            <button class="back-btn" onclick="goHome()">← Return</button>
+            <div class="archive-card">
+                <h2 style="font-family: 'Playfair Display'; color: #d8b4ff; text-align: center; margin-bottom: 30px;">Project Active: Romeo</h2>
+                
+                <div style="margin-bottom: 25px;">
+                    <p style="color: var(--gold); font-weight: 600; margin-bottom: 5px;">Q: What is the purpose of this project?</p>
+                    <p style="opacity: 0.9; line-height: 1.6;">A: To create a digital sanctuary. This isn't just a website; it’s a living archive for someone who made an unexpected but beautiful impact on my life. It exists to hold the things that matter—our songs, our photos, and the words I sometimes find hard to say out loud.</p>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <p style="color: var(--gold); font-weight: 600; margin-bottom: 5px;">Q: Why did you choose this format?</p>
+                    <p style="opacity: 0.9; line-height: 1.6;">A: Memories fade in phone galleries and chat logs. I wanted something intentional. "Project Active: Romeo" is about staying present—constantly building a space that reminds her she is seen and valued every time she logs in.</p>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <p style="color: var(--gold); font-weight: 600; margin-bottom: 5px;">Q: Who is this truly for?</p>
+                    <p style="opacity: 0.9; line-height: 1.6; font-style: italic;">A: It is for her. Entirely. Every line of code, every color choice, and every hidden detail was designed with her smile in mind. It’s a reminder that even in a digital world, my intentions for her are real and permanent.</p>
+                </div>
+
+                <p style="text-align: center; color: var(--primary-purple); font-family: 'Dancing Script'; font-size: 1.4rem; margin-top: 40px;">— Status: Active</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const PIN = "031426";
+        const targetDate = new Date("2026-05-14T00:00:00").getTime();
+
+        function startIntroSequence() {
+            const input = document.getElementById('pin').value;
+            if(input === PIN) {
+                document.getElementById('landing-page').style.display = 'none';
+                const intro = document.getElementById('intro-sequence');
+                const msg = document.getElementById('intro-msg');
+                intro.style.display = 'flex';
+
+                const lines = [
+                    "INITIALIZING SYSTEM...",
+                    "LOADING MEMORIES FOR MAHAL...",
+                    "SYNCING HEARTBEATS...",
+                    "PROJECT ROMEO: PHASE 2 ACTIVE"
+                ];
+                
+                let i = 0;
+                const interval = setInterval(() => {
+                    msg.innerText = lines[i];
+                    i++;
+                    if(i >= lines.length) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            intro.style.opacity = '0';
+                            setTimeout(() => {
+                                intro.style.display = 'none';
+                                document.getElementById('main-page').style.display = 'block';
+                                setTimeout(() => document.getElementById('main-page').style.opacity = '1', 50);
+                                initApp();
+                            }, 1000);
+                        }, 1000);
+                    }
+                }, 1000);
+            } else { alert("ACCESS DENIED"); }
+        }
+
+        function showView(id) {
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById(id).style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        function goHome() {
+            document.querySelectorAll('.gift-view').forEach(v => v.style.display = 'none');
+            document.getElementById('home-view').style.display = 'block';
+            document.getElementById('main-letter').style.display = 'none';
+            document.getElementById('seal-wrapper').style.display = 'block';
+        }
+
+        function openPaper() {
+            document.getElementById('seal-wrapper').style.display = 'none';
+            document.getElementById('main-letter').style.display = 'block';
+        }
+
+        function initApp() {
+            setInterval(() => {
+                const now = new Date().getTime();
+                const diff = targetDate - now;
+                const opt = { timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+                document.getElementById('live-clock').innerText = "STATION_TAYABAS // " + new Intl.DateTimeFormat('en-US', opt).format(new Date());
+
+                if (diff > 0) {
+                    document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    document.getElementById('mins').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    document.getElementById('secs').innerText = Math.floor((diff % (1000 * 60)) / 1000);
+                } else {
+                    document.querySelectorAll('.timer-unit span').forEach(el => el.innerText = "0");
+                }
+            }, 1000);
+
+            for(let i=0; i<20; i++) {
+                let f = document.createElement('div');
+                f.className = 'firefly';
+                f.style.left = Math.random()*100+'vw'; f.style.top = Math.random()*100+'vh';
+                f.style.animation = `float ${10 + Math.random()*10}s infinite linear`;
+                document.body.appendChild(f);
+            }
+        }
+    </script>
+</body>
+</html>
